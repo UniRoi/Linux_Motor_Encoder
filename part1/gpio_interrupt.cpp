@@ -3,7 +3,6 @@
 #include <unistd.h> // usleep()
 #include <iostream>
 
-
 int state = 0;
 
 static irq_handler_t my_gpio_irq_handler(unsigned int irq, void *dev_id, struct pt_regs *regs)
