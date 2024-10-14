@@ -1,0 +1,6 @@
+#files git should ignore
+*.cmd
+*.mod*
+*.o
+*.symvers
+*.order
