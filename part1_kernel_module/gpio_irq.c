@@ -9,7 +9,7 @@ MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Johannes 4 GNU/Linux");
 MODULE_DESCRIPTION("A simple LKM for a gpio interrupt");
 
-#define GPIO_17 529 // according to /sys/kernel/debug/gpio
+#define GPIO_17 17 // according to /sys/kernel/debug/gpio
 
 /** variable contains pin number o interrupt controller to which GPIO 17 is mapped to */
 unsigned int irq_number;
@@ -73,7 +73,7 @@ static void __exit ModuleExit(void)
 {
     printk("gpio_irq: Unloading module... ");
     free_irq(irq_number, NULL);
-    gpio_free(17);
+    gpio_free(GPIO_17);
 }
 
 module_init(ModuleInit);
