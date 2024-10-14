@@ -10,8 +10,8 @@ MODULE_AUTHOR("Johannes 4 GNU/Linux");
 MODULE_DESCRIPTION("A simple LKM for a gpio interrupt");
 
 #define GPIO_17 17 // according to /sys/kernel/debug/gpio
-#define GPIO_OUT 17
-#define GPIO_IN 20
+#define GPIO_OUT 529
+#define GPIO_IN 532
 
 /** variable contains pin number o interrupt controller to which GPIO 17 is mapped to */
 unsigned int irq_number;

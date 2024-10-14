@@ -51,7 +51,6 @@ int main() {
         std::cout << "waiting for event" << std::endl;
         gpiod_line_event_wait(pin_in, NULL); /* blocking */
         gpiod_line_set_value(pin_out, 1); 
-          
     }
 
     release_line:

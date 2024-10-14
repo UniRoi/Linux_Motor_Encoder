@@ -19,3 +19,31 @@ There is a 1.77 ms delay
     pi@rpi-matthiasr24:~/Linux_Motor_Encoder/part1 $ kill 2493
     [1]+  Terminated              ./flash_new.sh
 
+![StateChart](./images/p1_max_bash_script.PNG)
+CH2: input connected to pin20   
+CH1: output connected to pin17  
+
+
+## programm
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                              
+    61128 rpi-sar+  20   0    5252   2688   2560 R 100.0   0.6   0:10.30 gpioread                                             
+
+![StateChart](./images/p1_max_programm.PNG)
+CH2: input connected to pin20   
+CH1: output connected to pin17  
+
+## event
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                              
+    61132 rpi-sar+  20   0    5256   2816   2688 R  76.8   0.7   0:54.04 gpioevent  
+![StateChart](./images/p1_max_event.PNG)
+CH2: input connected to pin20   
+CH1: output connected to pin17  
+
+
+## interrupt
+in module: no measurement for CPU possible
+
+![StateChart](./images/p1_max_interrupt.PNG)
+CH2: input connected to pin20   
+CH1: output connected to pin17  
