@@ -11,11 +11,14 @@ COUNTER=0
 # gpioset 0 20=0
 gpioset 0 17=0
 while [ $COUNTER -lt 100000 ]; do
-    gpioset 0 17=0
+    # gpioset 0 17=0
     # Block until an edge event occurs. Don't print anything.
     # gpiomon --num-events=1 --silent --rising-edge 20 0 # not working -- no glue why
     if [[ $(gpioget 0 20) == "1" ]]; then
         gpioset 0 17=1
+    fi
+        if [[ $(gpioget 0 20) == "0" ]]; then
+        gpioset 0 17=0
     fi
 done
 

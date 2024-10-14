@@ -17,16 +17,24 @@ int main()
 
     int state = 0;
 
-    for (int counter=0;counter<1000;counter++)
+    while (true)
     {
         state = 0;
-        usleep(1); // 0.1 seconds   
+        //usleep(10); // 0.1 seconds   
         if(gpiod_line_get_value(pin_in) == 1) {
             state = 1;
-            std::cout << "state" << state << std::endl;
         }
-        gpiod_line_set_value(pin_out, state);           
+        gpiod_line_set_value(pin_out, state);     
     }
+    // for (int counter=0;counter<10000000000;counter++)
+    // {
+    //     state = 0;
+    //     usleep(10); // 0.1 seconds   
+    //     if(gpiod_line_get_value(pin_in) == 1) {
+    //         state = 1;
+    //     }
+    //     gpiod_line_set_value(pin_out, state);           
+    // }
 
     gpiod_line_set_value(pin_out, 0);
     gpiod_line_release(pin_out);
