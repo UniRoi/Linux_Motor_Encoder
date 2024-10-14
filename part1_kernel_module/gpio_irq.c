@@ -10,6 +10,8 @@ MODULE_AUTHOR("Johannes 4 GNU/Linux");
 MODULE_DESCRIPTION("A simple LKM for a gpio interrupt");
 
 #define GPIO_17 17 // according to /sys/kernel/debug/gpio
+#define GPIO_OUT 17
+#define GPIO_IN 20
 
 /** variable contains pin number o interrupt controller to which GPIO 17 is mapped to */
 unsigned int irq_number;
@@ -20,8 +22,11 @@ unsigned int irq_number;
 
 static irqreturn_t gpio_irq_handler(int irq, void *dev_id)
 {
- printk("gpio_irq: Interrupt was triggered and ISR was called!\n");
- return IRQ_HANDLED;
+    static int value = 1;
+    printk("gpio_irq: Interrupt was triggered and ISR was called!\n");
+    gpio_set_value(GPIO_OUT, !value);
+    value = !value;
+    return IRQ_HANDLED;
 }
 
 /**
@@ -31,34 +36,48 @@ static int __init ModuleInit(void)
 {
     printk("qpio_irq: Loading module... ");
 
-    /* Setup the gpio */
-    if(gpio_request(GPIO_17, "rpi-gpio-17")) 
+    /* Setup the gpio's*/
+    if(gpio_request(GPIO_IN, "rpi-gpio-20")) 
     { 
-    printk("Error!\nCan not allocate GPIO 17\n");
-    return -1;
+        printk("Error!\nCan not allocate GPIO %d\n", GPIO_IN);
+        return -1;
+    }
+
+    if(gpio_request(GPIO_OUT, "rpi-gpio-17")) 
+    { 
+        printk("Error!\nCan not allocate GPIO %d\n", GPIO_OUT);
+        return -1;
+    }
+
+    /* Set GPIO 20 direction */
+    if(gpio_direction_input(GPIO_IN)) 
+    {
+        printk("Error!\nCan not set GPIO %d to input!\n", GPIO_IN);
+        gpio_free(GPIO_IN);
+        return -1;
     }
 
     /* Set GPIO 17 direction */
-    if(gpio_direction_input(17)) 
+    if(gpio_direction_output(GPIO_OUT, 0)) 
     {
-        printk("Error!\nCan not set GPIO 17 to input!\n");
-        gpio_free(GPIO_17);
+        printk("Error!\nCan not set GPIO %d to input!\n", GPIO_OUT);
+        gpio_free(GPIO_OUT);
         return -1;
     }
 
     /* Setup the interrupt */
-    irq_number = gpio_to_irq(GPIO_17);
+    irq_number = gpio_to_irq(GPIO_IN);
 
     if(request_irq(irq_number, gpio_irq_handler, IRQF_TRIGGER_RISING, "my_gpio_irq", NULL) != 0)
     {
         printk("Error!\nCan not request interrupt nr.: %d\n", irq_number);
-        gpio_free(GPIO_17);
+        gpio_free(GPIO_IN);
 
         return -1;
     }
 
     printk("Done!\n");
-    printk("GPIO 17 is mapped to IRQ Nr.: %d\n", irq_number);
+    printk("GPIO %d is mapped to IRQ Nr.: %d\n", GPIO_IN, irq_number);
 
     return 0;
 }
@@ -73,7 +92,8 @@ static void __exit ModuleExit(void)
 {
     printk("gpio_irq: Unloading module... ");
     free_irq(irq_number, NULL);
-    gpio_free(GPIO_17);
+    gpio_free(GPIO_IN);
+    gpio_free(GPIO_OUT);
 }
 
 module_init(ModuleInit);
