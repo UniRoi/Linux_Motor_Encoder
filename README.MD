@@ -47,3 +47,16 @@ in module: no measurement for CPU possible
 ![StateChart](./images/p1_max_interrupt.PNG)
 CH2: input connected to pin20   
 CH1: output connected to pin17  
+
+
+# Part 3
+
+To enable PWM capabilities:
+In /boot/config.txt add following two lines:
+    
+    dtoverlay=pwm,pin=12,func=2
+    dtoverlay=pwm,pin=13,func=2
+
+This should add pwm capabilities for pins 12 and 13
+
+Use sudo nano /boot/config.txt to edit the file.
