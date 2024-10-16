@@ -1,11 +1,13 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdint.h>
 
 int main(){
     char out_buffer[100];
     int count = 0;
     int offset = 0;
+    volatile uint16_t ui16EncoderPos = 0;
 
     while(true){
         sleep(1);
@@ -16,16 +18,8 @@ int main(){
             return -1;
         }   
 
-        int ret = read(fd, out_buffer, count);     
-        if(ret < 0) {
-            printf("Failed to read.\n");
-            return -1;
-        } else if(ret == 0) {
-            printf("No data was read.\n");
-        } else {
-
-            printf("Data read: %d\n", ret);
-        }
+        ui16EncoderPos = read(fd, out_buffer, count);
+        printf("Data read: %hd\n", ui16EncoderPos);     
 
         close(fd);
     }

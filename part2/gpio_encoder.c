@@ -26,7 +26,7 @@ MODULE_PARM_DESC(name, "The name to display in /var/log/kern.log");
 /** variable contains pin number o interrupt controller to which GPIO 17 is mapped to */
 unsigned int irq_number;
 unsigned int ui_EncoderPos;
-int bDirection;
+bool bDirection;
 
 static int     encoder_open(struct inode *, struct file *);
 static int     encoder_release(struct inode *, struct file *);
