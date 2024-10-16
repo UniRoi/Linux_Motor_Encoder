@@ -38,7 +38,9 @@ CH1: output connected to pin17
     61132 rpi-sar+  20   0    5256   2816   2688 R  76.8   0.7   0:54.04 gpioevent  
 ![StateChart](./images/p1_max_event.PNG)
 CH2: input connected to pin20   
-CH1: output connected to pin17  
+CH1: output connected to pin17 
+
+If the CPU is stressed there's no difference in the delay.
 
 
 ## interrupt
@@ -47,6 +49,8 @@ in module: no measurement for CPU possible
 ![StateChart](./images/p1_max_interrupt.PNG)
 CH2: input connected to pin20   
 CH1: output connected to pin17  
+
+If the CPU is stressed there's no difference in the delay.
 
 
 # Part 3
