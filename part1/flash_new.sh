@@ -1,4 +1,4 @@
-
+#!/bin/bash
 COUNTER=0
 # LED blinking
 # while [ $COUNTER -lt 100000 ]; do
