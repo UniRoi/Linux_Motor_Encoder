@@ -30,6 +30,12 @@ If the CPU us stressed the delay gets bigger:
 CH2: input connected to pin20   
 CH1: output connected to pin17 
 
+If we set the prio of the programm higher (sudo nice -n -10) the delay gets smaller again, beacuse the programm runs more often:
+
+![StateChart](./images/p1_delay_bash_prio.PNG)
+CH2: input connected to pin20   
+CH1: output connected to pin17
+
 
 
 ## programm
@@ -46,6 +52,12 @@ If the CPU us stressed the delay gets bigger:
 ![StateChart](./images/p1_delay_programm_stress.PNG)
 CH2: input connected to pin20   
 CH1: output connected to pin17 
+
+If we set the prio of the programm higher (sudo nice -n -10) the delay gets smaller again beacuse it gets called more often:
+
+![StateChart](./images/p1_delay_programm_prio.PNG)
+CH2: input connected to pin20   
+CH1: output connected to pin17
 
 ## event
     PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                              
