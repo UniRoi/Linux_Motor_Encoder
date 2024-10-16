@@ -24,6 +24,14 @@ CH2: input connected to pin20
 CH1: output connected to pin17  
 
 
+If the CPU us stressed the delay gets bigger:
+
+![StateChart](./images/p1_delay_bash_stress.PNG)
+CH2: input connected to pin20   
+CH1: output connected to pin17 
+
+
+
 ## programm
 
     PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                              
@@ -31,7 +39,13 @@ CH1: output connected to pin17
 
 ![StateChart](./images/p1_max_programm.PNG)
 CH2: input connected to pin20   
-CH1: output connected to pin17  
+CH1: output connected to pin17
+
+If the CPU us stressed the delay gets bigger:
+
+![StateChart](./images/p1_delay_programm_stress.PNG)
+CH2: input connected to pin20   
+CH1: output connected to pin17 
 
 ## event
     PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                              
