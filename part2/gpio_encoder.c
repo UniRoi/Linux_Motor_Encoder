@@ -31,6 +31,7 @@ bool bDirection;
 static int     encoder_open(struct inode *, struct file *);
 static int     encoder_release(struct inode *, struct file *);
 static ssize_t encoder_read(struct file *, char *, size_t, loff_t *);
+static ssize_t encoder_write(struct file *, const char *, size_t, loff_t *);
 
 
 static struct file_operations fops =
@@ -38,6 +39,7 @@ static struct file_operations fops =
    .read = encoder_read,
     .open = encoder_open,
    .release = encoder_release,
+   .write = encoder_write,
 };
 
 static int encoder_release(struct inode *inodep, struct file *filep){
@@ -55,6 +57,12 @@ static ssize_t encoder_read(struct file *filp, char *buffer, size_t length, loff
    return ui_EncoderPos;
 }
 
+static ssize_t encoder_write(struct file * file, const char *buf, size_t count, loff_t *ppos)
+{
+    ui_EncoderPos = (unsigned int)*buf;
+    printk("encoder write: accepting %zu bytes from the user\n", count);
+    return count;
+}
 
 static irqreturn_t gpio_irq_handler(int irq, void *dev_id)
 {
