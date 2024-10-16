@@ -59,6 +59,8 @@ If we set the prio of the programm higher (sudo nice -n -10) the delay gets smal
 CH2: input connected to pin20   
 CH1: output connected to pin17
 
+But still not as fast as if the CPU load is 0.
+
 ## event
     PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                              
     61132 rpi-sar+  20   0    5256   2816   2688 R  76.8   0.7   0:54.04 gpioevent  
