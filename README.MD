@@ -1,16 +1,22 @@
 # Part1:  
-## bash script (bullseye):
+Measurement of the response time INPUT -> OUTPUT.
+
+The measurement is done with a oszilloscope. Therefore a input pin is connected to the Channel2 and the output to Channel1. With the connection to 3.3V the input pin is set to "high". The response time is defined by the time difference between the rising edge of the input and output.
+
+
+<!-- ## bash script (bullseye):
 ![StateChart](./images/p1_delay_bash_script.PNG)
 CH2: input connected to pin19  
 CH1: output connected to pin17  
 
-There is a 1.77 ms delay   
+There is a 1.77 ms delay    -->
 
 
 ## bash script using gpiod
 
     give permissions to file using: chmod u+x flash_new.sh
     Execute bash script using: ./flash_new.sh & 
+
     The "&" sends the process to the background and the cpu load can be determined using the "top" command:
 
     PID USER PR  NI  VIRT   RES   SHR S  %CPU  %MEM  TIME+ CMD 
@@ -39,6 +45,7 @@ CH1: output connected to pin17
 
 
 ## programm
+
 
     PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                              
     61128 rpi-sar+  20   0    5252   2688   2560 R 100.0   0.6   0:10.30 gpioread                                             
@@ -71,7 +78,7 @@ CH1: output connected to pin17
 If the CPU is stressed there's no difference in the delay.
 
 
-## interrupt
+## LKM interrupt
 in module: no measurement for CPU possible
 
 ![StateChart](./images/p1_max_interrupt.PNG)
@@ -80,8 +87,11 @@ CH1: output connected to pin17
 
 If the CPU is stressed there's no difference in the delay.
 
+## Evaluation
+Using the Linux Kernel Module Interrupt has no consequences for the CPU load an vice versa the CPU load has no impact to the kernel module. Even if the usage of the LKM interrupt is not the fastest method, it is free from the impact of other programms/ CPU load. 
+A real time application is defined by a maximal execution time. Just the interrupt can gurantee a fixed execution time. 
 
-# Part 3
+# Part 2:
 
 To enable PWM capabilities:
 In /boot/config.txt add following two lines:
