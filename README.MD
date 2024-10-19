@@ -108,9 +108,54 @@ Running the programm requires admin rights therefore the programm is executed wi
 ## Jitter measurements
 The jitter is measured with a high resolution timer and printed to the output using std::cout
 
-### usleep() without cpu stress
+Stress testing the cpu was done with the package stress 
 
+    sudo apt install stress
+
+And then using the following command:
+
+    stress --cpu 1 --timeout 180 &
+
+
+We evaluated two different methods for timedelay in the control loop:
+- using usleep()
+- using std::this_thread::sleep_for()
+
+Note: The x-axis scaling is different on all histogram plots
+
+### usleep() without cpu stress
+![u_wo_stress](./images/p2_usleep_without_stress.png)
+Most time measurements are close together most of them are between 200 us and 400 us, maximum time difference was around 1 ms.  
 
 ### usleep() with cpu stress
+![u_wo_stress](./images/p2_usleep_with_stress.png)
+Stressing the cpu resulted in a broader time spectrum. The majority of the samples have a jitter of 1 ms. However the maximum jitter with the cpu stress is higher than 4 ms.
 
 
+### thread sleep without cpu stress
+![u_wo_stress](./images/p2_this_thread_sleep_without_stress.png)
+Most time measurements are close together most of them are between 200 us and 600 us, maximum time difference was around 1,2 ms. More values can be found between 600 us and 1 ms.
+
+### thread sleep with cpu stress
+![u_wo_stress](./images/p2_this_thread_sleep_with_stress.png)
+Stressing the cpu resulted in a broader time spectrum. The majority of the samples have a jitter of 1 ms. However the maximum jitter with the cpu stress is at arround 7 ms.
+
+## Speed
+In the next two pictures, the speed is plotted in red and the duty cycle is in blue.
+
+### 5000 rpm
+![5000rpm](./images/p2_speed_duty_5000rpm.png)
+
+### 10000 rpm
+![10000rpm](./images/p2_speed_duty_10000rpm.png)
+
+## Stability of the control loop
+The control loop worked very good in all test casses. More finetuning would result in even smoother rpm plots. Generally it worked better at higher speeds.  
+Tuning the control loop would include measuring the time difference and forwarding this measurement to the controller.  
+
+
+# Links
+
+Youtube:
+
+Github: https://github.com/UniRoi/Linux_Motor_Encoder
