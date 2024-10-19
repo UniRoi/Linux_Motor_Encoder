@@ -1,10 +1,10 @@
 # Variables
 CXX := g++
 CXXFLAGS := -Wall -Wextra -std=c++17 -Iinclude -MMD -MP  # Include your library's headers
-LDFLAGS := -lpthread -lgpiod -lpigpio #-Llib -l:fifo.a  # Link pthread
+LDFLAGS := -lpthread -lgpiod#-Llib -l:fifo.a  # Link pthread
 SRC_DIR := src
 OBJ_DIR := obj
-TARGET := speedCtrl
+TARGET := testPWM
 
 # Source and object files
 SRC := $(wildcard $(SRC_DIR)/*.cpp)

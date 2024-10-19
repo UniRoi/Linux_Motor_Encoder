@@ -81,14 +81,26 @@ CH1: output connected to pin17
 If the CPU is stressed there's no difference in the delay.
 
 
-# Part 3
+# Part 2
 
-To enable PWM capabilities:
-In /boot/config.txt add following two lines:
-    
-    dtoverlay=pwm,pin=12,func=2
-    dtoverlay=pwm,pin=13,func=2
+Enabling PWM capabilities with the device tree overlay, didn't work. Therefore we installed a library which does the pwm controll.
 
-This should add pwm capabilities for pins 12 and 13
+    sudo apt install pigpio
 
-Use sudo nano /boot/config.txt to edit the file.
+The headers are included with:
+
+    #include <pigpio.h>
+
+Running the programm requires admin rights therefore the programm is executed with
+
+    sudo ./speedCtrl
+
+## Jitter measurements
+The jitter is measured with a high resolution timer and printed to the output using std::cout
+
+### usleep() without cpu stress
+
+
+### usleep() with cpu stress
+
+
