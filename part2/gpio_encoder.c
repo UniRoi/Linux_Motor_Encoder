@@ -67,7 +67,7 @@ static ssize_t encoder_write(struct file * file, const char *buf, size_t count, 
 static irqreturn_t gpio_irq_handler(int irq, void *dev_id)
 {
     bDirection = gpio_get_value(GPIO_IN_22);
-    printk("gpio_irq: Interrupt was triggered and ISR was called!\n");
+    
 
     if(bDirection == true)
     {
@@ -79,6 +79,7 @@ static irqreturn_t gpio_irq_handler(int irq, void *dev_id)
         /* positive direction */ 
         ui_EncoderPos++;
     }
+    printk("gpio_irq: Interrupt was triggered and ISR was called! EncPos: %d \n", ui_EncoderPos);
     return IRQ_HANDLED;
 }
 
