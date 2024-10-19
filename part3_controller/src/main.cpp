@@ -13,13 +13,6 @@
 
 using namespace std::chrono;
 
-/* todo for linux application:
- - check if kernel module is loaded 
- - find a way for updating the time for the control loop 
- - 
- */
-
-
 #define DBG2_PIN 25
 #define DBG_PIN 17
 #define SLP_PIN 5
@@ -42,7 +35,7 @@ Controller *P_speed = nullptr;
 
 static float m_fKp = 0.27;
 static float m_fTi = 0.41;
-static uint16_t targetRpm = 5000;
+static uint16_t targetRpm = 10000;
 
 static int gpio_pin = 18;   // GPIO 18 (Physical Pin 12)
 static int frequency = 1000; // 1kHz PWM
@@ -84,7 +77,10 @@ void speedCtlTask(void)
 
 
       duration<double> elapsedTime = duration_cast<duration<double>>(currentTime - previousTime);
-      std::cout << elapsedTime.count() << std::endl;
+      
+      // print elapsed time for jitter measurement
+      // std::cout << elapsedTime.count() << std::endl;
+
       // toggle dbg pin for timing
       dbg_pin_state = !dbg_pin_state;
 
@@ -100,17 +96,15 @@ void speedCtlTask(void)
 
       new_duty = percentageToDutyCycle((speed_new / targetRpm)*100);
 
-      // std::cout << i16Rps << " " << new_duty << std::endl;
+      std::cout << i16Rps << " " << new_duty << std::endl;
 
-      /* check how to make pwm */
       gpioPWM(gpio_pin, new_duty);
-      // gpioPWM(gpio_pin, 128);
       previousTime = currentTime;
       
       // std::cout << "leaving speed ctl task\n";
     }
-    usleep(100000);
-    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    // usleep(100000);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 }
 

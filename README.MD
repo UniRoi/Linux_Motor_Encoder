@@ -91,11 +91,7 @@ If the CPU is stressed there's no difference in the delay.
 Using the Linux Kernel Module Interrupt has no consequences for the CPU load an vice versa the CPU load has no impact to the kernel module. Even if the usage of the LKM interrupt is not the fastest method, it is free from the impact of other programms/ CPU load. 
 A real time application is defined by a maximal execution time. Just the interrupt can gurantee a fixed execution time. 
 
-<<<<<<< HEAD
-# Part 2:
-=======
 # Part 2
->>>>>>> f74c2fa8b6c8174e072f1dc4ff8291979b3aee0b
 
 Enabling PWM capabilities with the device tree overlay, didn't work. Therefore we installed a library which does the pwm controll.
 
