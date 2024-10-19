@@ -164,6 +164,7 @@ Tuning the control loop would include measuring the time difference and forwardi
 
 # Links
 
-Youtube:
+Youtube: https://www.youtube.com/shorts/iH6vpbOmVDQ
+
 
 Github: https://github.com/UniRoi/Linux_Motor_Encoder
