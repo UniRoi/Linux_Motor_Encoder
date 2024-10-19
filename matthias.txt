@@ -1,2 +1,15 @@
-hi from rpi matthias
+Part2:
+PIN Connection:
+#define DBG2_PIN 25
+#define DBG_PIN 17
+
+#define SLP_PIN 20
+#define FLT_PIN 21
+
+#define C1_PIN 5
+#define C2_PIN 6
+
+#define Out1_PIN 23
+#define Out2_PIN 24
+
 
