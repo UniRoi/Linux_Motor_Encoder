@@ -43,10 +43,12 @@ double PI_control::update(double ref, double actual, float dt_t)
     double output = P_out + I_out;
 
     // Apply saturation (windup protection)
-    if (output > maxOutput) {
+    if (output > maxOutput) 
+    {
         output = maxOutput;
         integral -= (error * dt) / fTi; // Undo integral update
-    } else if (output < minOutput) {
+    } else if (output < minOutput) 
+    {
         output = minOutput;
         integral -= (error * dt) / fTi; // Undo integral update
     }

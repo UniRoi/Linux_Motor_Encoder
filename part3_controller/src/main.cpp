@@ -5,11 +5,13 @@
 #include <gpiod.h> // All of the GPIO stuff...
 #include <unistd.h> // usleep()
 #include <time.h>
+#include <chrono>  // For high-precision timing
+#include <pigpio.h>  // Include pigpio header
 
 #include "speed_control.h"
 #include "encoder.h"
 
-
+using namespace std::chrono;
 
 /* todo for linux application:
  - check if kernel module is loaded 
@@ -20,8 +22,8 @@
 
 #define DBG2_PIN 25
 #define DBG_PIN 17
-#define SLP_PIN 20
-#define FLT_PIN 21
+#define SLP_PIN 5
+#define FLT_PIN 4
 
 #define CTL_UPDATE_TIME 100 // in ms
 
@@ -40,59 +42,75 @@ Controller *P_speed = nullptr;
 
 static float m_fKp = 0.27;
 static float m_fTi = 0.41;
-static uint16_t targetRpm = 10000;
+static uint16_t targetRpm = 5000;
+
+static int gpio_pin = 18;   // GPIO 18 (Physical Pin 12)
+static int frequency = 1000; // 1kHz PWM
 
 void speedCtlTask(void);
 void encoderUpdateTask(void);
 
+int percentageToDutyCycle(float percentage) 
+{
+  if (percentage < 0.0) 
+  {
+      percentage = 0.0;
+  } else if (percentage > 100.0) 
+  {
+      percentage = 100.0;
+  }
+  
+  return static_cast<int>((percentage / 100.0) * 255);
+}
+
 void speedCtlTask(void)
 {
-  static time_t u64LastTime = 0;
-  time_t u64TimeNow = 0;
   static int dbg_pin_state = 0;
-  time(&u64LastTime);
-
   int16_t i16Rps = 0;
+
+  auto previousTime = high_resolution_clock::now();
 
   int new_duty = 0;
   double speed_new = 0;
 
   while (1)
   {
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    time(&u64TimeNow);
+    
+    auto currentTime = high_resolution_clock::now();
     /* Wait for the mutex to become available. */
     {
-      std::cout << "Enter speed ctl task\n";
+      // std::cout << "Enter speed ctl task\n";
       std::lock_guard<std::mutex> lock(mtx);
 
-      // if ((u64TimeNow - u64LastTime) > CTL_UPDATE_TIME)
-      {
-        // toggle dbg pin for timing
-        dbg_pin_state = !dbg_pin_state;
 
-        // if(gpiod_line_set_value(pin_dbg, dbg_pin_state) < 0)
-        // {
-        //   std::cout << "Could not set value for dbg pin \n";
-        // }
+      duration<double> elapsedTime = duration_cast<duration<double>>(currentTime - previousTime);
+      std::cout << elapsedTime.count() << std::endl;
+      // toggle dbg pin for timing
+      dbg_pin_state = !dbg_pin_state;
 
-        // get encoder rpm directly from kernel module
-        i16Rps = Encoder.GetRpm();
+      // if(gpiod_line_set_value(pin_dbg, dbg_pin_state) < 0)
+      // {
+      //   std::cout << "Could not set value for dbg pin \n";
+      // }
 
-        std::cout << "Rpm: " << i16Rps;
+      // get encoder rpm directly from kernel module
+      i16Rps = Encoder.GetRpm();
 
-        // speed_new = P_speed->update(targetRpm, static_cast<double>(i16Rps), 0);
+      speed_new = P_speed->update(targetRpm, static_cast<double>(i16Rps), 0.1 );
 
-        // new_duty = (constrain(speed_new / targetRpm, 0.01, 0.99) * 100);
+      new_duty = percentageToDutyCycle((speed_new / targetRpm)*100);
 
-        std::cout << " new duty: " << new_duty << std::endl;
+      // std::cout << i16Rps << " " << new_duty << std::endl;
 
-        /* check how to make pwm */
-        // ana_out.set(new_duty);
-        u64LastTime = u64TimeNow;
-      }
+      /* check how to make pwm */
+      gpioPWM(gpio_pin, new_duty);
+      // gpioPWM(gpio_pin, 128);
+      previousTime = currentTime;
+      
       // std::cout << "leaving speed ctl task\n";
     }
+    usleep(100000);
+    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 }
 
@@ -128,17 +146,15 @@ void encoderUpdateTask(void)
 int main(void)
 {
   int ret = 0;
-  // uint32_t u32TimeNow = 0;
-  // eStates eStateTransition;
-  // bool bFltState = false;
-  // bool bResume = false;
 
-  // int16_t i16Rps = 0;
+  // Initialize pigpio library
+  if (gpioInitialise() < 0) {
+      std::cerr << "pigpio initialization failed!\n";
+      return -1;
+  }
 
-  // int new_duty = 0;
-  // double speed_new = 0;
-
-  // u32TimeNow = millis();
+  gpioSetPWMfrequency(gpio_pin, frequency);
+  gpioPWM(gpio_pin, 0); // start with zero duty cycle
 
   chip = gpiod_chip_open_by_name(chipname);
 
@@ -179,8 +195,20 @@ int main(void)
     // goto close_chip;
   }
 
-  // Encoder.init();
-  // P_speed = new PI_control(m_fKp, m_fTi, 0.1, 12500, 1);
+  if (Encoder.init() < 0)
+  {
+    std::cout << "please load kerneldriver with sudo insmod and create device with sudo mknod /dev/encoder c 236 0\n";
+    ret = -1;
+    return ret;
+    // goto cleanup;
+  }
+
+  if(gpiod_line_set_value(pin_slp, 1) < 0)
+  {
+    std::cout << "could not set value for slp " << std::endl; //<< u64TimeNow
+  }
+
+  P_speed = new PI_control(m_fKp, m_fTi, 0.1, 12500, 1);
 
 
   gpiod_line_request_output(pin_dbg, "polling", 0);
@@ -195,11 +223,18 @@ int main(void)
   speedCtlTaskObj.join();
   encoderUpdateTaskObj.join();
 
+cleanup:
   // release_line:
-  // gpiod_line_release(pin_in);
+  gpiod_line_release(pin_dbg);
+  gpiod_line_release(pin_dbg2);
+  gpiod_line_release(pin_flt);
+  gpiod_line_release(pin_slp);
 
   // close_chip:
-  //   gpiod_chip_close(chip);
+    gpiod_chip_close(chip);
+
+  // Terminate pigpio library
+  gpioTerminate();
 
   return ret;
 }

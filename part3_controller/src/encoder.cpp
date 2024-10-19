@@ -28,7 +28,8 @@ int encoder::init(void)
     }
     else
     {
-        std::cout << "Could not open device\n";
+        std::cout << "Could not open encoder device\n";
+        ret = -1;
     }
     close(fd);
     
